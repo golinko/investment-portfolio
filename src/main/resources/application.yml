@@ -1,0 +1,14 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on_param
+    include-exception: true
+
+logging:
+  level:
+    web:
+      TRACE
+    org.springframework.web:
+      TRACE
