@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class SwaggerConfig {
     @Bean
-    fun springShopOpenAPI(): OpenAPI {
+    fun openAPI(): OpenAPI {
         return OpenAPI().info(
             Info()
                 .title("Investment portfolio REST API")

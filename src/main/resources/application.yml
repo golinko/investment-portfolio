@@ -1,6 +1,7 @@
 server:
   port: 8080
   error:
+    path: /error
     include-message: always
     include-binding-errors: always
     include-stacktrace: on_param
@@ -9,6 +10,27 @@ server:
 logging:
   level:
     web:
-      TRACE
+      DEBUG
     org.springframework.web:
-      TRACE
+      DEBUG
+    org.springframework.data:
+      DEBUG
+
+spring:
+  datasource:
+    driver-class-name: "org.h2.Driver"
+    url: jdbc:h2:mem:portfoliosdb
+    username: sa
+    password: password
+  sql:
+    init:
+      mode: always
+      continue-on-error: false
+      schema-locations: classpath:schema.sql
+  h2:
+    console:
+      enabled: 'true'
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
