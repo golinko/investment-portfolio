@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface StocksRepository: CrudRepository<Stock, Long> {
-    fun findByRisk(risk: String?): List<Stock>
+    fun findByRisk(risk: RiskLevel): List<Stock>
 }

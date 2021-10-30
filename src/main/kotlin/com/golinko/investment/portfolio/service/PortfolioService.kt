@@ -8,5 +8,5 @@ import org.springframework.stereotype.Service
 class PortfolioService(
     private val stocksRepository: StocksRepository
 ) {
-    fun portfolio(risk: RiskLevel) = stocksRepository.findByRisk(risk.risk)
+    fun portfolio(risk: RiskLevel) = stocksRepository.findByRisk(risk)
 }
