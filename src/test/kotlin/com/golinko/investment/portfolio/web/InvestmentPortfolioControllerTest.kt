@@ -1,7 +1,10 @@
 package com.golinko.investment.portfolio.web
 
-import com.golinko.investment.portfolio.repo.RiskLevel
-import com.golinko.investment.portfolio.repo.Stock
+import com.golinko.investment.portfolio.model.PortfolioAggregatedModel
+import com.golinko.investment.portfolio.model.PortfolioModel
+import com.golinko.investment.portfolio.model.PortfolioSettings
+import com.golinko.investment.portfolio.model.RiskLevel
+import com.golinko.investment.portfolio.service.PortfolioAggregatorService
 import com.golinko.investment.portfolio.service.PortfolioMapper
 import com.golinko.investment.portfolio.service.PortfolioService
 import io.mockk.every
@@ -14,7 +17,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.http.HttpStatus
+import java.math.BigDecimal
+import java.time.LocalDate
 
 @ExtendWith(MockKExtension::class)
 internal class InvestmentPortfolioControllerTest {
@@ -25,35 +29,67 @@ internal class InvestmentPortfolioControllerTest {
     @MockK
     private lateinit var portfolioService: PortfolioService
     @MockK
+    private lateinit var aggregatorService: PortfolioAggregatorService
+    @MockK
     private lateinit var portfolioMapper: PortfolioMapper
-    @MockK
-    private lateinit var stock1: Stock
-    @MockK
-    private lateinit var portfolio: Portfolio
 
-    private lateinit var stocks: List<Stock>
+    @MockK
+    private lateinit var portfolioSettingsDTO: PortfolioSettingsDTO
+    @MockK
+    private lateinit var portfolioSettings: List<PortfolioSettings>
+    @MockK
+    private lateinit var portfolioModels: List<PortfolioModel>
+    @MockK
+    private lateinit var aggregated: List<PortfolioAggregatedModel>
+    @MockK
+    private lateinit var mapped: PortfolioAggregatedDTO
+
+    private val portfolioFilter = PortfolioFilter(RiskLevel.MODERATELY_HIGH)
+    private val valueFilter = PortfolioValueFilter(RiskLevel.MODERATE, LocalDate.now(), LocalDate.now(), BigDecimal("500"))
 
     @BeforeEach
     fun setUp() {
-        stocks = listOf(stock1)
-        every { portfolioService.portfolio(any()) } returns stocks
-        every { portfolioMapper.map(stocks) } returns listOf(portfolio)
+        every { portfolioService.portfolioSettings(portfolioFilter.risk) } returns portfolioSettings
+        every {
+            portfolioService.portfolio(valueFilter.risk, valueFilter.from, valueFilter.to, valueFilter.contribution)
+        } returns portfolioModels
+        every { aggregatorService.aggregatePortfolio(portfolioModels) } returns aggregated
+
+        every { portfolioMapper.mapPortfolioSettings(portfolioSettings) } returns listOf(portfolioSettingsDTO)
+        every { portfolioMapper.mapPortfolio(aggregated) } returns listOf(mapped)
     }
 
     @Test
-    fun `getPortfolio returns portfolio by risk level`() {
-        val result = investmentPortfolioController.getPortfolio(PortfolioFilter(RiskLevel.MODERATELY_HIGH))
+    fun `getPortfolioCurrentValue returns portfolio current value`() {
+        val result = investmentPortfolioController.getPortfolioCurrentValue(valueFilter)
 
         assertNotNull(result)
-        assertThat(result.statusCode).isEqualTo(HttpStatus.OK)
-        assertThat(result.body).hasSize(1)
-        assertThat(result.body?.get(0)).isEqualTo(portfolio)
+        assertThat(result).hasSize(1)
+        assertThat(result[0]).isEqualTo(mapped)
     }
 
     @Test
-    fun `getPortfolio throws exception`() {
-        every { portfolioService.portfolio(any()) } throws IllegalArgumentException("Invalid risk level")
+    fun `getPortfolioCurrentValue throws exception`() {
+        every {
+            portfolioService.portfolio(valueFilter.risk, valueFilter.from, valueFilter.to, valueFilter.contribution)
+        } throws IllegalArgumentException("Some exception")
 
-        assertThrows<IllegalArgumentException> { investmentPortfolioController.getPortfolio(PortfolioFilter(RiskLevel.MODERATELY_HIGH)) }
+        assertThrows<IllegalArgumentException> { investmentPortfolioController.getPortfolioCurrentValue(valueFilter) }
+    }
+
+    @Test
+    fun `getPortfolioSettings returns settings by risk level`() {
+        val result = investmentPortfolioController.getPortfolioSettings(portfolioFilter)
+
+        assertNotNull(result)
+        assertThat(result).hasSize(1)
+        assertThat(result[0]).isEqualTo(portfolioSettingsDTO)
+    }
+
+    @Test
+    fun `getPortfolioSettings throws exception`() {
+        every { portfolioService.portfolioSettings(portfolioFilter.risk) } throws IllegalArgumentException("Invalid risk level")
+
+        assertThrows<IllegalArgumentException> { investmentPortfolioController.getPortfolioSettings(portfolioFilter) }
     }
 }

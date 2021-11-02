@@ -1,14 +1,16 @@
 package com.golinko.investment.portfolio.service
 
-import com.golinko.investment.portfolio.repo.Stock
-import com.golinko.investment.portfolio.web.Portfolio
+import com.golinko.investment.portfolio.model.PortfolioAggregatedModel
+import com.golinko.investment.portfolio.model.PortfolioSettings
+import com.golinko.investment.portfolio.web.PortfolioAggregatedDTO
+import com.golinko.investment.portfolio.web.PortfolioSettingsDTO
 import org.mapstruct.Mapper
-import org.mapstruct.Mapping
 
 @Mapper(componentModel = "spring")
 interface PortfolioMapper {
-    fun map(stocks: List<Stock>): List<Portfolio>
+    fun mapPortfolioSettings(portfolioSettings: List<PortfolioSettings>): List<PortfolioSettingsDTO>
 
-    @Mapping(source = "name", target = "ticker")
-    fun map(stock: Stock): Portfolio
+    fun mapPortfolioSettings(portfolioSettings: PortfolioSettings): PortfolioSettingsDTO
+
+    fun mapPortfolio(portfolioHistory: List<PortfolioAggregatedModel>): List<PortfolioAggregatedDTO>
 }
