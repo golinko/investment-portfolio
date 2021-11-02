@@ -1,18 +1,19 @@
-package com.golinko.investment.portfolio.repo
+package com.golinko.investment.portfolio.model
 
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.annotation.Id
 import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
 import org.springframework.data.relational.core.mapping.Table
+import java.math.BigDecimal
 
 
 @Table
-data class Stock(
+data class PortfolioSettings(
     @Id val id: String?,
-    val name: String,
+    val ticker: String,
     val risk: RiskLevel,
-    val weight: Float,
+    val weight: BigDecimal,
 )
 
 enum class RiskLevel(val risk: String) {

@@ -1,7 +1,7 @@
 package com.golinko.investment.portfolio.config
 
-import com.golinko.investment.portfolio.repo.RiskLevelToStringConverter
-import com.golinko.investment.portfolio.repo.StringToRiskLevelConverter
+import com.golinko.investment.portfolio.model.RiskLevelToStringConverter
+import com.golinko.investment.portfolio.model.StringToRiskLevelConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jdbc.core.convert.JdbcCustomConversions
