@@ -9,12 +9,14 @@ server:
 
 logging:
   level:
+    root:
+      INFO
     web:
-      DEBUG
+      INFO
     org.springframework.web:
-      DEBUG
+      INFO
     org.springframework.data:
-      DEBUG
+      INFO
 
 spring:
   datasource:
@@ -32,3 +34,9 @@ spring:
       enabled: 'true'
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+  jackson:
+    default-property-inclusion: non_null
+
+# FMP api key
+fmp:
+  api-key: define-your-own-key

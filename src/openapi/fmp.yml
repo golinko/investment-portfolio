@@ -1,0 +1,119 @@
+openapi: 3.0.0
+servers:
+  - description: Financial Modeling Prep API
+    url: https://financialmodelingprep.com/api/v3
+info:
+  description: Financial Modeling Prep API
+  version: 1.0.0
+  title: Financial Modeling Prep API
+  contact:
+    email: sam@sddproductions.com
+  license:
+    name: GPL-3.0
+tags:
+  - name: history
+    description: History
+#security:
+#  - api_key: []
+paths:
+  /historical-price-full/{symbol}:
+    get:
+      tags:
+        - history
+      summary: Chart Market Stock Data
+      parameters:
+        - name: symbol
+          in: path
+          description: Name of ticker
+          required: true
+          schema:
+            type: string
+        - name: from
+          in: query
+          description: From date
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2021-10-31"
+        - name: to
+          in: query
+          description: To date
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2021-10-31"
+        - name: serietype
+          in: query
+          description: Serie type
+          required: false
+          schema:
+            type: string
+            enum: [ line, bar ]
+        - name: apikey
+          in: query
+          description: Api key
+          required: true
+          schema:
+            type: string
+      description: 'This endpoint provides access to historical prices.'
+      operationId: getDailyPrices
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndOfDayPriceHistory'
+        '405':
+          description: Invalid input
+
+components:
+#  securitySchemes:
+#    api_key:
+#      type: apiKey
+#      name: apikey
+#      in: query
+  schemas:
+    EndOfDayPriceHistory:
+      properties:
+        symbol:
+          type: string
+        historical:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndOfDayPrice'
+    EndOfDayPrice:
+      required:
+        - date
+        - close
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2021-10-31"
+        open:
+          type: number
+        high:
+          type: number
+        low:
+          type: number
+        close:
+          type: number
+        adjClose:
+          type: number
+        volume:
+          type: number
+        unadjustedVolume:
+          type: number
+        change:
+          type: number
+        changePercent:
+          type: number
+        vwap:
+          type: number
+        label:
+          type: string
+        changeOverTime:
+          type: number
