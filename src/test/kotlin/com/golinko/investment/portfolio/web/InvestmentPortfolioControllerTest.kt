@@ -1,8 +1,8 @@
 package com.golinko.investment.portfolio.web
 
 import com.golinko.investment.portfolio.model.PortfolioAggregatedModel
-import com.golinko.investment.portfolio.model.PortfolioModel
 import com.golinko.investment.portfolio.model.PortfolioSettings
+import com.golinko.investment.portfolio.model.PortfolioValueModel
 import com.golinko.investment.portfolio.model.RiskLevel
 import com.golinko.investment.portfolio.service.PortfolioAggregatorService
 import com.golinko.investment.portfolio.service.PortfolioMapper
@@ -38,7 +38,7 @@ internal class InvestmentPortfolioControllerTest {
     @MockK
     private lateinit var portfolioSettings: List<PortfolioSettings>
     @MockK
-    private lateinit var portfolioModels: List<PortfolioModel>
+    private lateinit var portfolioValueModels: List<PortfolioValueModel>
     @MockK
     private lateinit var aggregated: List<PortfolioAggregatedModel>
     @MockK
@@ -51,9 +51,9 @@ internal class InvestmentPortfolioControllerTest {
     fun setUp() {
         every { portfolioService.portfolioSettings(portfolioFilter.risk) } returns portfolioSettings
         every {
-            portfolioService.portfolio(valueFilter.risk, valueFilter.from, valueFilter.to, valueFilter.contribution)
-        } returns portfolioModels
-        every { aggregatorService.aggregatePortfolio(portfolioModels) } returns aggregated
+            portfolioService.portfolioValue(valueFilter.risk, valueFilter.from, valueFilter.to, valueFilter.contribution)
+        } returns portfolioValueModels
+        every { aggregatorService.aggregatePortfolioValue(portfolioValueModels) } returns aggregated
 
         every { portfolioMapper.mapPortfolioSettings(portfolioSettings) } returns listOf(portfolioSettingsDTO)
         every { portfolioMapper.mapPortfolio(aggregated) } returns listOf(mapped)
@@ -71,7 +71,7 @@ internal class InvestmentPortfolioControllerTest {
     @Test
     fun `getPortfolioCurrentValue throws exception`() {
         every {
-            portfolioService.portfolio(valueFilter.risk, valueFilter.from, valueFilter.to, valueFilter.contribution)
+            portfolioService.portfolioValue(valueFilter.risk, valueFilter.from, valueFilter.to, valueFilter.contribution)
         } throws IllegalArgumentException("Some exception")
 
         assertThrows<IllegalArgumentException> { investmentPortfolioController.getPortfolioCurrentValue(valueFilter) }

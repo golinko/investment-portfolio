@@ -1,32 +1,33 @@
 [
   {
-    "date": "2018-12-03",
-    "shares": 2.13,
     "ticker": "CAKE",
-    "value": 100.0
-  },
-  {
-    "date": "2018-11-01",
-    "shares": 2.06,
-    "ticker": "CAKE",
-    "value": 100.0
-  },
-  {
-    "date": "2017-12-01",
-    "shares": 2.08,
-    "ticker": "CAKE",
-    "value": 100.0
-  },
-  {
-    "date": "2017-11-01",
-    "shares": 2.22,
-    "ticker": "CAKE",
-    "value": 100.0
-  },
-  {
-    "date": "2017-01-03",
-    "shares": 1.68,
-    "ticker": "CAKE",
-    "value": 100.0
+    "currentPrice": 46.540001,
+    "portfolioHistory": [
+      {
+        "date": "2018-12-03",
+        "shares": 2.12675,
+        "contribution": 100.0
+      },
+      {
+        "date": "2018-11-01",
+        "shares": 2.05804,
+        "contribution": 100.0
+      },
+      {
+        "date": "2017-12-01",
+        "shares": 2.08203,
+        "contribution": 100.0
+      },
+      {
+        "date": "2017-11-01",
+        "shares": 2.22222,
+        "contribution": 100.0
+      },
+      {
+        "date": "2017-01-03",
+        "shares": 1.68265,
+        "contribution": 100.0
+      }
+    ]
   }
 ]

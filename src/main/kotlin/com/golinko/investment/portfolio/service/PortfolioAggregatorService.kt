@@ -1,19 +1,21 @@
 package com.golinko.investment.portfolio.service
 
 import com.golinko.investment.portfolio.model.PortfolioAggregatedModel
-import com.golinko.investment.portfolio.model.PortfolioModel
+import com.golinko.investment.portfolio.model.PortfolioValueModel
 import org.springframework.stereotype.Service
+import java.math.RoundingMode
 
 @Service
 class PortfolioAggregatorService {
 
-    fun aggregatePortfolio(portfolioModels: List<PortfolioModel>): List<PortfolioAggregatedModel> =
-        portfolioModels.groupBy { it.ticker }
-            .mapValues { portfolio ->
-                PortfolioAggregatedModel(
-                    ticker = portfolio.key,
-                    shares = portfolio.value.sumOf { it.shares },
-                    value = portfolio.value.sumOf { it.value },
-                )
-            }.values.toList()
+    fun aggregatePortfolioValue(portfolioValue: List<PortfolioValueModel>): List<PortfolioAggregatedModel> =
+        portfolioValue.map { portfolio ->
+            val shares = portfolio.portfolioHistory.sumOf { it.shares }
+            PortfolioAggregatedModel(
+                ticker = portfolio.ticker,
+                shares = shares.setScale(2, RoundingMode.HALF_UP),
+                contribution = portfolio.portfolioHistory.sumOf { it.contribution }.setScale(2, RoundingMode.HALF_UP),
+                value = portfolio.currentPrice.multiply(shares).setScale(2, RoundingMode.HALF_UP)
+            )
+        }
 }

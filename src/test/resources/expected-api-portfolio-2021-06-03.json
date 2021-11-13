@@ -1,17 +1,20 @@
 [
   {
-    "shares": 385.45,
-    "value": 15795.0,
+    "shares": 385.46,
+    "value": 21805.38,
+    "contribution": 15795.0,
     "ticker": "CAKE"
   },
   {
-    "shares": 78.2,
-    "value": 4860.0,
+    "shares": 78.18,
+    "value": 7392.72,
+    "contribution": 4860.0,
     "ticker": "PZZA"
   },
   {
-    "shares": 94.02,
-    "value": 3645.0,
+    "shares": 94.04,
+    "value": 5253.13,
+    "contribution": 3645.0,
     "ticker": "EAT"
   }
 ]

@@ -33,8 +33,8 @@ class InvestmentPortfolioController(
     fun getPortfolioCurrentValue(
         @Parameter(required = true, description = "Filter") @RequestBody filter: PortfolioValueFilter
     ): List<PortfolioAggregatedDTO> {
-        val portfolio = portfolioService.portfolio(filter.risk, filter.from, filter.to, filter.contribution)
-        val aggregated = aggregatorService.aggregatePortfolio(portfolio)
+        val portfolioValue = portfolioService.portfolioValue(filter.risk, filter.from, filter.to, filter.contribution)
+        val aggregated = aggregatorService.aggregatePortfolioValue(portfolioValue)
         return portfolioMapper.mapPortfolio(aggregated)
     }
 }

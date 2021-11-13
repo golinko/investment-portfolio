@@ -39,6 +39,8 @@ data class PortfolioAggregatedDTO(
     @Schema(title = "Stock name")
     val ticker: String,
     @Schema(title = "The sum of stock contributions for the given period")
+    val contribution: BigDecimal,
+    @Schema(title = "The current value of stock portfolio for the given period")
     val value: BigDecimal,
     @Schema(title = "The amount of stocks in portfolio for the given period")
     val shares: BigDecimal,

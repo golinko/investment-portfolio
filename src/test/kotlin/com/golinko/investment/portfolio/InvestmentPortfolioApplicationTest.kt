@@ -1,6 +1,7 @@
 package com.golinko.investment.portfolio
 
 import com.golinko.investment.portfolio.model.RiskLevel
+import com.golinko.investment.portfolio.web.PortfolioAggregatedDTO
 import com.golinko.investment.portfolio.web.PortfolioFilter
 import com.golinko.investment.portfolio.web.PortfolioSettingsDTO
 import com.golinko.investment.portfolio.web.PortfolioValueFilter
@@ -11,7 +12,6 @@ import io.restassured.RestAssured.port
 import io.restassured.http.ContentType
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
-import org.hamcrest.Matchers.`is`
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -109,8 +109,8 @@ internal class InvestmentPortfolioApplicationTest {
     }
 
     @Test
-    fun `getPortfolioCurrentValue returns empty if no history data`() {
-        given()
+    fun `getPortfolioCurrentValue returns empty values if no history data`() {
+        val result = given()
             .contentType(ContentType.JSON)
             .body(PortfolioValueFilter(
                 RiskLevel.MODERATE,
@@ -123,7 +123,12 @@ internal class InvestmentPortfolioApplicationTest {
             .then()
             .assertThat()
             .statusCode(200)
-            .assertThat()
-            .body("isEmpty()", `is`(true))
+            .extract().response().body.jsonPath().getList( "", PortfolioAggregatedDTO::class.java)
+
+        assertThat(result).hasSize(3)
+        assertThat(result)
+            .allMatch { it.value == BigDecimal("0.0") }
+            .allMatch { it.contribution == BigDecimal("0.0") }
+            .allMatch { it.shares == BigDecimal("0.0") }
     }
 }

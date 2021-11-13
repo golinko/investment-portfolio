@@ -6,8 +6,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.golinko.investment.fmp.model.EndOfDayPriceHistory
 import com.golinko.investment.portfolio.client.HistoryClient
-import com.golinko.investment.portfolio.model.PortfolioModel
 import com.golinko.investment.portfolio.model.PortfolioSettings
+import com.golinko.investment.portfolio.model.PortfolioValueModel
 import com.golinko.investment.portfolio.model.RiskLevel
 import com.golinko.investment.portfolio.repo.PortfolioSettingsRepository
 import io.mockk.every
@@ -63,22 +63,25 @@ internal class PortfolioServiceTest {
         every { historyClient.dailyPrices(ticker, from, to) } returns
                 mapper.readValue(resourceToString("/fmp-test-data.json", UTF_8))
 
-        val result = portfolioService.portfolio(risk, from, to, contribution)
+        val result = portfolioService.portfolioValue(risk, from, to, contribution)
 
         assertEquals(
-            mapper.readValue<List<PortfolioModel>>(resourceToString("/expected-portfolio.json", UTF_8)),
+            mapper.readValue<List<PortfolioValueModel>>(resourceToString("/expected-portfolio.json", UTF_8)),
             result
         )
     }
 
     @Test
-    fun `portfolio returns empty if no history data`() {
+    fun `portfolio returns empty values if no history data`() {
         every { historyClient.dailyPrices(ticker, from, to) } returns EndOfDayPriceHistory()
 
-        val result = portfolioService.portfolio(risk, from, to, contribution)
+        val result = portfolioService.portfolioValue(risk, from, to, contribution)
 
         assertNotNull(result)
-        assertThat(result).isEmpty()
+        assertThat(result).hasSize(1)
+        assertThat(result[0].ticker).isEqualTo(ticker)
+        assertThat(result[0].currentPrice).isEqualTo(BigDecimal.ZERO)
+        assertThat(result[0].portfolioHistory).isEmpty()
     }
 
     @Test
