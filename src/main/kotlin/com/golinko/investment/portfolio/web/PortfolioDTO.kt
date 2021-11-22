@@ -2,6 +2,7 @@ package com.golinko.investment.portfolio.web
 
 import com.golinko.investment.portfolio.model.RiskLevel
 import io.swagger.v3.oas.annotations.media.Schema
+import org.springframework.format.annotation.DateTimeFormat
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -17,9 +18,11 @@ data class PortfolioValueFilter(
     val risk: RiskLevel,
 
     @Schema(title = "From date")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     val from: LocalDate,
 
     @Schema(title = "To date")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     val to: LocalDate,
 
     @Schema(title = "Monthly contribution")

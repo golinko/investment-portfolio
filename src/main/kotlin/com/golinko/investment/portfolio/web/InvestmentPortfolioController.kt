@@ -7,10 +7,10 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
 
 @Tag(name = "Investment portfolio API", description = "Investment portfolio related operations")
 @RestController
@@ -21,17 +21,17 @@ class InvestmentPortfolioController(
     private val portfolioMapper: PortfolioMapper
 ) {
     @Operation(summary = "Return portfolio settings that matches the risk level of the user")
-    @PostMapping
+    @GetMapping
     fun getPortfolioSettings(
-        @Parameter(required = true, description = "Filter") @RequestBody filter: PortfolioFilter
+        @Parameter(required = true, description = "Filter") @Valid filter: PortfolioFilter
     ): List<PortfolioSettingsDTO> = portfolioMapper.mapPortfolioSettings(
         portfolioService.portfolioSettings(filter.risk)
     )
 
     @Operation(summary = "Calculate current value of users portfolio")
-    @PostMapping("/current-value")
+    @GetMapping("/current-value")
     fun getPortfolioCurrentValue(
-        @Parameter(required = true, description = "Filter") @RequestBody filter: PortfolioValueFilter
+        @Parameter(required = true, description = "Filter") @Valid filter: PortfolioValueFilter
     ): List<PortfolioAggregatedDTO> {
         val portfolioValue = portfolioService.portfolioValue(filter.risk, filter.from, filter.to, filter.contribution)
         val aggregated = aggregatorService.aggregatePortfolioValue(portfolioValue)
